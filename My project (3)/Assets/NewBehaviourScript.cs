@@ -1,27 +1,50 @@
 using UnityEngine;
-using untiyEngine.InputSystem;
+using UnityEngine.InputSystem;
 
 public class NewBehaviourScript : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private Vector2 moveInput;
+    public float moveSpeed = 7f;
+    public float jumpForce = 7f;
+    private Rigidbody2D rb;
+    private Animator myAnimator;
+
     void Start()
     {
-        private Vector2 movelnput;
-    public void Onmove(InputValue value)
-    {
-        movelnput = value.Get<vector2>();
+        rb = GetComponent<Rigidbody2D>();
+        myAnimator = GetComponent<Animator>();
+        myAnimator.SetBool("move", false);
     }
-    // Update is called once per frame
+    public void OnMove(InputValue value)
+    {
+        moveInput = value.Get<Vector2>();
+    }
+    public void OnJump(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+        }
+    }
     void Update()
     {
-        if (movelnput.x > 0)
+        if (moveInput.x > 0)
         {
-            transform. IocalScale = new vector3(1, 1, 1);
+            transform.localScale = new Vector3(1, 1, 1);
         }
-        else if (movelnput.x < 0)
+        else if (moveInput.x < 0)
         {
-            transform.IocalScale = new vector3(1, 1, 1);
+            transform.localScale = new Vector3(-1, 1, 1);
         }
-        transform,Translate(vector3.right * moveSpeed * movelnput x * Time. deltaTime);
+
+        if (moveInput.magnitude > 0)
+        {
+            myAnimator.SetBool("move", true);
+        }
+        else
+        {
+            myAnimator.SetBool("move", false);
+        }
+        transform.Translate(Vector3.right * moveSpeed * moveInput.x * Time.deltaTime);
     }
 }
